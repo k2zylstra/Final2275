@@ -61,7 +61,7 @@ void testDijkstras(Graph *g) {
 
 void testMaxFlow(Graph *g) {
     cout << "From 3 to 0" << endl;
-    cout << g->getMaxFlow(3, 0) << endl;
+    cout << g->getMaxFlow(0, 4) << endl;
     cout << "From 0 to 3" << endl;
     cout << g->getMaxFlow(0, 3) << endl;
 }

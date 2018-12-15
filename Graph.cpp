@@ -128,13 +128,15 @@ int Graph::getMaxFlow(int source, int sink) {
         while(bfs(source, sink)) {
 
             converge *traceC = sinkC;
-            converge *childC = sinkC;
+            converge *childC;
             run *edge;
 
             int pathMinFlow = INT_MAX;
             while (traceC->parent != nullptr) {
 
+                childC = traceC;
                 traceC = traceC->parent;
+
 
                 for (int i = 0; i < traceC->runOptions.size(); i++) {
 
@@ -147,9 +149,9 @@ int Graph::getMaxFlow(int source, int sink) {
             }
 
             traceC = sinkC;
-            childC = sinkC;
             while(traceC->parent != nullptr) {
 
+                childC = traceC;
                 traceC = traceC->parent;
 
                 for (int i = 0; i < traceC->runOptions.size(); i++) {
@@ -162,13 +164,7 @@ int Graph::getMaxFlow(int source, int sink) {
 
                 edge->flow += pathMinFlow;
 
-                for (int i = 0; i< childC->runOptions.size(); i++) {
-
-                    edge = childC->runOptions[i];
-                    if (childC->runOptions[i]->node == traceC) {
-                        break;
-                    }
-                }
+                edge = getOppisite(edge, traceC->id);
                 edge->flow -= pathMinFlow;
 
             }
@@ -220,6 +216,94 @@ bool Graph::bfs(int start, int end) {
 }
 
 void Graph::copyAdjListToRes() {
+
+
+//    converge *source = new converge(0);
+//    converge *c1 = new converge(1);
+//    converge *c2 = new converge(2);
+//    converge *c3 = new converge(3);
+//    converge *sink = new converge(4);
+//
+//    residualGraph.push_back(*source);
+//    residualGraph.push_back(*c1);
+//    residualGraph.push_back(*c2);
+//    residualGraph.push_back(*c3);
+//    residualGraph.push_back(*sink);
+//
+//    run *r01 = new run();
+//    r01->node = &residualGraph[1];
+//    r01->capacity =8;
+//    r01->flow = 0;
+//
+//    run *r10 = new run();
+//    r10->node = &residualGraph[0];
+//    r10->capacity =8;
+//    r10->flow = 8;
+//
+//    run *r14 = new run();
+//    r14->node = &residualGraph[4];
+//    r14->capacity =11;
+//    r14->flow = 0;
+//
+//    run *r41 = new run();
+//    r41->node = &residualGraph[1];
+//    r41->capacity =11;
+//    r41->flow = 11;
+//
+//    run *r13 = new run();
+//    r13->node = &residualGraph[3];
+//    r13->capacity =4;
+//    r13->flow = 0;
+//
+//    run *r31 = new run();
+//    r31->node = &residualGraph[1];
+//    r31->capacity =4;
+//    r31->flow = 4;
+//
+//    run *r02 = new run();
+//    r02->node = &residualGraph[2];
+//    r02->capacity =5;
+//    r02->flow = 0;
+//
+//    run *r20 = new run();
+//    r20->node = &residualGraph[0];
+//    r20->capacity =5;
+//    r20->flow = 5;
+//
+//    run *r23 = new run();
+//    r23->node = &residualGraph[3];
+//    r23->capacity =10;
+//    r23->flow = 0;
+//
+//    run *r32 = new run();
+//    r32->node = &residualGraph[2];
+//    r32->capacity =10;
+//    r32->flow = 10;
+//
+//    run *r34 = new run();
+//    r34->node = &residualGraph[4];
+//    r34->capacity =12;
+//    r34->flow = 0;
+//
+//    run *r43 = new run();
+//    r43->node = &residualGraph[3];
+//    r43->capacity =12;
+//    r43->flow = 0;
+//
+//
+//
+//    residualGraph[0].runOptions.push_back(r01);
+//    residualGraph[0].runOptions.push_back(r02);
+//    residualGraph[1].runOptions.push_back(r14);
+//    residualGraph[1].runOptions.push_back(r13);
+//    residualGraph[1].runOptions.push_back(r10);
+//    residualGraph[2].runOptions.push_back(r23);
+//    residualGraph[2].runOptions.push_back(r20);
+//    residualGraph[3].runOptions.push_back(r34);
+//    residualGraph[3].runOptions.push_back(r31);
+//    residualGraph[3].runOptions.push_back(r32);
+//    residualGraph[4].runOptions.push_back(r41);
+//    residualGraph[4].runOptions.push_back(r43);
 
     //delete previous residual graph
     for (int i = 0; i < residualGraph.size(); i++) {
@@ -300,8 +384,19 @@ void Graph::copyAdjListToRes() {
     }
 }
 
-void Graph::getOppisite(run *r, int parentId) {
+run* Graph::getOppisite(run *r, int parentId) {
 
+    run *toReturn;
+
+    for (int i = 0; i < r->node->runOptions.size(); i++) {
+
+        if (r->node->runOptions[i]->node->id == parentId) {
+            toReturn = r->node->runOptions[i];
+            break;
+        }
+    }
+
+    return toReturn;
 }
 
 
